@@ -1,0 +1,20 @@
+spring:
+  application:
+    name:  cdc
+  cloud:
+    stream:
+      bindings:
+        practiceSessionOutput:
+          destination: practice.session
+          binder: rabbit1
+      binders:
+        rabbit1:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: ${alef_practice_rabbitmq_hostname:localhost}
+                port: ${alef_practice_rabbitmq_port:5672}
+                username: ${alef_practice_rabbitmq_username:guest}
+                password: ${alef_practice_rabbitmq_password:guest}
+                virtual-host: ${rabbitmq_virtual_host:/}

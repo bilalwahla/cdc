@@ -1,0 +1,72 @@
+buildscript {
+	ext {
+		kotlinVersion = '1.3.20'
+		springBootVersion = '2.0.5.RELEASE'
+		verifierVersion = '2.0.2.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+		classpath("org.jetbrains.kotlin:kotlin-allopen:${kotlinVersion}")
+		classpath("org.springframework.cloud:spring-cloud-contract-gradle-plugin:${verifierVersion}")
+	}
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'kotlin-spring'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'spring-cloud-contract'
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', 'Finchley.SR2')
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
+	implementation 'org.springframework.cloud:spring-cloud-stream'
+	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+	implementation "org.jetbrains.kotlin:kotlin-reflect"
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
+	testImplementation 'org.springframework.cloud:spring-cloud-stream-test-support'
+}
+
+contracts {
+	baseClassForTests = 'com.example.cdc.base.producer.PracticeMessagingBase'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+compileKotlin {
+	kotlinOptions {
+		freeCompilerArgs = ['-Xjsr305=strict']
+		jvmTarget = '1.8'
+	}
+}
+
+compileTestKotlin {
+	kotlinOptions {
+		freeCompilerArgs = ['-Xjsr305=strict']
+		jvmTarget = '1.8'
+	}
+}
