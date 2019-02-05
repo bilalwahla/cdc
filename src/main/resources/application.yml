@@ -13,8 +13,7 @@ spring:
           environment:
             spring:
               rabbitmq:
-                host: ${alef_practice_rabbitmq_hostname:localhost}
-                port: ${alef_practice_rabbitmq_port:5672}
-                username: ${alef_practice_rabbitmq_username:guest}
-                password: ${alef_practice_rabbitmq_password:guest}
-                virtual-host: ${rabbitmq_virtual_host:/}
+                host: localhost
+                port: 5672
+                username: guest
+                password: guest

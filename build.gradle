@@ -6,6 +6,7 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+		mavenLocal()
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -20,6 +21,9 @@ apply plugin: 'kotlin-spring'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'spring-cloud-contract'
+apply plugin: 'maven-publish'
+
+compileTestGroovy.enabled = false
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
@@ -27,6 +31,7 @@ sourceCompatibility = '1.8'
 
 repositories {
 	mavenCentral()
+	mavenLocal()
 }
 
 ext {
@@ -39,8 +44,6 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-stream'
 	implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 	implementation "org.jetbrains.kotlin:kotlin-reflect"
-	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-	testImplementation 'org.junit.jupiter:junit-jupiter-api'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
 	testImplementation 'org.springframework.cloud:spring-cloud-starter-contract-verifier'
@@ -48,12 +51,23 @@ dependencies {
 }
 
 contracts {
-	baseClassForTests = 'com.example.cdc.base.producer.PracticeMessagingBase'
+	baseClassMappings {
+		baseClassMapping(
+				'.*producer.practice.messaging.*' : 'com.example.cdc.message.producer.PracticeMessagingBase'
+		)
+	}
+	basePackageForTests = 'com.example.cdc.contract.verifier.tests'
 }
 
 dependencyManagement {
 	imports {
 		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+test {
+	testLogging {
+		exceptionFormat = 'full'
 	}
 }
 
